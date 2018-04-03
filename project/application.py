@@ -1,4 +1,5 @@
 from flask import Flask, render_template, session, redirect, request, url_for, g
+import constants
 
 
 # EB looks for an 'application' callable by default.
