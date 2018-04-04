@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, redirect, request, url_for, g
 import constants
+from database import CursorFromConnectionFromPool
 
 
 # EB looks for an 'application' callable by default.
@@ -24,7 +25,13 @@ def apps():
 
 # run the app.
 if __name__ == "__main__":
+    with CursorFromConnectionFromPool() as cursor:
+        cursor.execute("select * from test;")
+        data = cursor.fetchall()
+        for t in data:
+            print(t)
+        
     # Setting debug to True enables debug output. This line should be
     # removed before deploying a production app.
-    application.debug = True
-    application.run()
+    # application.debug = True
+    # application.run()
