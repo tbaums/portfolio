@@ -1,12 +1,13 @@
 from constants import NEWSAPI_KEY
 from newsapi import NewsApiClient
 from database import CursorFromConnectionFromPool
-
+from analyzer import Analyzer
 
 class News:
     def __init__(self):
         self.search_params = {}
         self.content = []
+        self.total_results = None
         self.client = NewsApiClient(api_key='451cb1a39295459a8a5b5282a8c1af5e')
 
     def __repr__(self):
@@ -22,18 +23,10 @@ class News:
         with CursorFromConnectionFromPool() as cursor:
             cursor.execute("select * from public.search_params where parameters = %s", (query ,))
             data = cursor.fetchone()
-            print(data)
             if data == None: 
                 return False    
             else:
                 return True
-
-    # def __build_query(self, params):
-    #     query = ""
-    #     for key in params:
-    #         query = query + str(key) + "=" + str(params[key])
-    #         print(query)
-    #     return query
 
     def __save_params(self, params):
         if not self.__dupe_query(params):
@@ -45,15 +38,15 @@ class News:
         for item in content:
             source_id = item['source']['id']
             source_name = item['source']['name']
-            author = item['author']
-            title = item['title'].replace("'", "''")
-            description = item['description'].replace("'", "''")
+            author = str(item['author']).replace("'", "''")
+            title = str(item['title']).replace("'", "''")
+            description = str(item['description']).replace("'", "''")
             url = item['url']
             url_to_image = item['urlToImage']
             published_at = item['publishedAt']
             query = "insert into public.search_content values (default, %s, \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\');" % (param_id, source_id, source_name, 
                                                                                         author, title, description, url, url_to_image, published_at)
-            #TODO insert statement above fails silently. add error handling.
+            #TODO insert statement above fails silently by default. add error handling.
             with CursorFromConnectionFromPool() as cursor:
                 cursor.execute(query)
                                                                                         
@@ -79,33 +72,36 @@ class News:
     def fetch_news(self, **kwargs):
         self.__set_search_params(kwargs)
         if not self.__dupe_query(self.get_search_params()):
-            response = self.client.get_top_headlines(q=self.get_search_params()['q'])
+            response = self.client.get_everything(q=self.get_search_params()['q'],
+                                                  language=self.get_search_params()['language'],
+                                                  from_parameter=self.get_search_params()['from_parameter'],
+                                                  to=self.get_search_params()['to'],
+                                                  page_size=100)
             if response['status'] != 'ok':
                 return "newsapi client request failed"
             for article in response['articles']:
                 self.content.append(article)
                 
-            
+            # calculate number of pages
+            self.total_results = response['totalResults']
+
             # save news to db automatically
             self.__save_params(self.get_search_params())
             param_id = self.get_param_id(self.get_search_params())
             self.__save_content(param_id, self.get_content())
         else:
             response = self.load_from_db(self.get_search_params())
+        return response['articles']
+
+    def analyze_count(self, text_dict):
+        text_list = []
+        for text in text_dict:
+            text_list.append(text['title'])
+        response = Analyzer.analyze_count(text_list)
         return response
 
-# x = News().get_param_id("test4")
 
-
-
-# x = News().dupe_query("test")
-# print(x)
-
-# x = News().dupe_query("test")
-# print(x)
-
-print(News().fetch_news(q="trump"))
-
-# print(news.toodle)
-
-# print(news.poodle)
+news = News()
+r = news.fetch_news(q='North Korea', language='en', from_parameter='2017-12-31', to='2018-01-31')
+c = news.analyze_count(r)
+print(c)
