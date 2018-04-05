@@ -1,4 +1,4 @@
-
+from database import CursorFromConnectionFromPool
 
 class Analyzer:
 
@@ -20,3 +20,10 @@ class Analyzer:
                         word_count[word] = 1
         
         return word_count
+
+    @classmethod
+    def save_analysis_to_db(cls, param_id, analysis):
+        analysis = str(analysis)
+        analysis = analysis.replace("'", "''")
+        with CursorFromConnectionFromPool() as cursor:
+            cursor.execute("insert into public.wordcount values (default, %s, \'%s\');" % (param_id, analysis))

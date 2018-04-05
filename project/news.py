@@ -6,6 +6,7 @@ from analyzer import Analyzer
 class News:
     def __init__(self):
         self.search_params = {}
+        self.param_id = None
         self.content = []
         self.total_results = None
         self.client = NewsApiClient(api_key='451cb1a39295459a8a5b5282a8c1af5e')
@@ -58,11 +59,14 @@ class News:
     def get_content(self):
         return self.content
     
-    def get_param_id(self, params):
-        with CursorFromConnectionFromPool() as cursor: #TODO refactor
+    def get_param_id(self, params=None):
+        if self.param_id == None:
+            with CursorFromConnectionFromPool() as cursor: #TODO refactor
                 cursor.execute("select * from public.search_params where parameters=%s;", (str(params) ,))
                 data = cursor.fetchone()
-                return data[0]
+                self.param_id = data[0]
+                return self.param_id
+        return self.param_id
 
 
     #TODO implement load_from_db
@@ -98,6 +102,7 @@ class News:
         for text in text_dict:
             text_list.append(text['title'])
         response = Analyzer.analyze_count(text_list)
+        Analyzer.save_analysis_to_db(self.get_param_id(), response)
         return response
 
 
