@@ -9,6 +9,7 @@ class News:
         self.param_id = None
         self.content = []
         self.total_results = None
+        self.pages = None
         self.client = NewsApiClient(api_key='451cb1a39295459a8a5b5282a8c1af5e')
 
     def __repr__(self):
@@ -77,25 +78,35 @@ class News:
         self.__set_search_params(kwargs)
         if not self.__dupe_query(self.get_search_params()):
             response = self.client.get_everything(q=self.get_search_params()['q'],
-                                                  language=self.get_search_params()['language'],
-                                                  from_parameter=self.get_search_params()['from_parameter'],
-                                                  to=self.get_search_params()['to'],
-                                                  page_size=100)
-            if response['status'] != 'ok':
-                return "newsapi client request failed"
-            for article in response['articles']:
-                self.content.append(article)
-                
+                                                    language=self.get_search_params()['language'],
+                                                    from_parameter=self.get_search_params()['from_parameter'],
+                                                    to=self.get_search_params()['to'],
+                                                    page_size=100, 
+                                                    page=1)
             # calculate number of pages
             self.total_results = response['totalResults']
+            self.pages = min(self.total_results / 100, 10)
 
-            # save news to db automatically
-            self.__save_params(self.get_search_params())
-            param_id = self.get_param_id(self.get_search_params())
-            self.__save_content(param_id, self.get_content())
+            for page in range(1, self.pages):
+                if page != 1:
+                    response = self.client.get_everything(q=self.get_search_params()['q'],
+                                                        language=self.get_search_params()['language'],
+                                                        from_parameter=self.get_search_params()['from_parameter'],
+                                                        to=self.get_search_params()['to'],
+                                                        page_size=100, 
+                                                        page=page)
+                if response['status'] != 'ok':
+                    return "newsapi client request failed"
+                for article in response['articles']:
+                    self.content.append(article)
+                    
+                # save news to db automatically
+                self.__save_params(self.get_search_params())
+                param_id = self.get_param_id(self.get_search_params())
+                self.__save_content(param_id, self.get_content())
         else:
             response = self.load_from_db(self.get_search_params())
-        return response['articles']
+        return self.content
 
     def analyze_count(self, text_dict):
         text_list = []
@@ -106,7 +117,7 @@ class News:
         return response
 
 
-news = News()
-r = news.fetch_news(q='North Korea', language='en', from_parameter='2017-12-31', to='2018-01-31')
-c = news.analyze_count(r)
-print(c)
+# news = News()
+# r = news.fetch_news(q='North Korea', language='en', from_parameter='2017-12-31', to='2018-01-31')
+# c = news.analyze_count(r)
+# print(c)

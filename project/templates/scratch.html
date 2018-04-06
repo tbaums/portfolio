@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}
+Scratch
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Scratch! What whaaaat!</h1>
+    <p>This is <b>some</b> text</p>
+    <div id="myDiv" style="width:850px;height:500px;"></div>
+    <script>
+         Plotly.newPlot('myDiv', {{ data | safe  }});
+    </script>
+    <ul>
+        {% for item in data: %}
+            <li>{{ item }}, {{ data[item] }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+<!-- <script>
+    var data = '{{ data }};'
+    var traces = []
+    Object.keys(data).forEach(function (key){
+        var key = {
+            x: [1], y: [data[key]], 
+            mode: 'scatter',
+            name: "'" + key + "'"
+        };
+        traces.push(key);
+    })
+    for (item in data) {
+       
+        
+    };
+
+    console.log(traces);
+
+    // var trace1 = {
+    //     x: [1, 2, 3, 4],
+    //     y: [10, 15, 13, 17],
+        
+    //     };
+
+    // var trace2 = {
+    //     x: [1, 2, 3, 4],
+    //     y: [16, 5, 11, 9],
+    //     type: 'scatter'
+    //     };
+
+    // var traces = [trace1, trace2]; -->
