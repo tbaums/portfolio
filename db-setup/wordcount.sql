@@ -1,7 +1,7 @@
 /* 
 Drop the table if it exists
 */
-drop table if exists "public"."wordcount";
+drop table if exists "public"."wordcount" cascade;
 
 /* 
 Create table

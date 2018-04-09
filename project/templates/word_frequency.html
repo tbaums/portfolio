@@ -7,9 +7,9 @@ Scratch
 <div class="container">
     <h1>Scratch! What whaaaat!</h1>
     <p>This is <b>some</b> text</p>
-    <div id="myDiv" style="width:850px;height:500px;"></div>
+    <div id="graph" style="width:850px;height:500px;"></div>
     <script>
-         Plotly.newPlot('myDiv', {{ data | safe  }});
+         Plotly.newPlot('graph', {{ data | safe  }});
     </script>
     <ul>
         {% for item in data: %}

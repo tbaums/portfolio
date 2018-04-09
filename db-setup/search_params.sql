@@ -14,4 +14,4 @@ create table "public"."search_params" (
 /*
 Create an index on parameters so it isn't miserably slow
 */
-create index parameters_index ON "public"."search_params" (paramaters);
+create index parameters_index ON "public"."search_params" (parameters);

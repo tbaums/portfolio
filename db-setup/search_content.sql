@@ -1,7 +1,7 @@
 /* 
 Drop the table if it exists
 */
-drop table if exists "public"."search_content";
+drop table if exists "public"."search_content" cascade;
 
 /* 
 Create table
@@ -9,7 +9,7 @@ Create table
 create table "public"."search_content" (
     id serial primary key,
     search_param_id  int,
-    source_id int,
+    source_id varchar(255),
     source_name varchar(255),
     author varchar(255),
     title text,
