@@ -9,8 +9,7 @@ application = Flask(__name__)
 
 @application.route('/')
 def homepage():
-    text = "this is some text"
-    return render_template('home.html')
+    return render_template('cv.html')
 
 @application.route('/cv')
 def cv():
