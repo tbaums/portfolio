@@ -3,6 +3,7 @@ from newsapi import NewsApiClient
 from database import CursorFromConnectionFromPool
 from analyzer import Analyzer
 import urllib
+import asyncio
 
 class News:
     def __init__(self):

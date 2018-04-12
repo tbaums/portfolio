@@ -1,5 +1,6 @@
-from flask import Flask, render_template, session, redirect, request, url_for, g
+from flask import Flask, render_template, session, redirect, request, url_for, g, abort, request
 from news import News
+import json
 import constants
 
 
@@ -36,7 +37,7 @@ def word_frequency():
         ]
     for span in spans:
         news = News()
-        data = news.fetch_news(q='North Korea', language='en', from_parameter=span['from_parameter'], to=span['to'])
+        data = news.fetch_news(q='Berkshire Hathaway', language='en', from_parameter=span['from_parameter'], to=span['to'])
         # print(data)
         analysis = news.analyze_count(data)
         data_container.append(analysis) 
