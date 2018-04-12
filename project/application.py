@@ -25,19 +25,58 @@ def apps():
     return render_template('apps.html')
 
 
-@application.route('/word_frequency')
-def word_frequency():
+@application.route('/trump')
+def trump():
+    tmp = word_frequency('Trump')
+    js_data_container = tmp[0]
+    layout = tmp[1]
+    return render_template('trump.html', data=js_data_container, layout=layout)
+
+@application.route('/obama')
+def obama():
+    tmp = word_frequency('Obama')
+    js_data_container = tmp[0]
+    layout = tmp[1]
+    return render_template('obama.html', data=js_data_container, layout=layout)
+
+@application.route('/mueller')
+def mueller():
+    tmp = word_frequency('Mueller')
+    js_data_container = tmp[0]
+    layout = tmp[1]
+    return render_template('mueller.html', data=js_data_container, layout=layout)
+
+@application.route('/fbi')
+def fbi():
+    tmp = word_frequency('FBI')
+    js_data_container = tmp[0]
+    layout = tmp[1]
+    return render_template('fbi.html', data=js_data_container, layout=layout)
+
+@application.route('/syria')
+def syria():
+    tmp = word_frequency('syria')
+    js_data_container = tmp[0]
+    layout = tmp[1]
+    return render_template('syria.html', data=js_data_container, layout=layout)
+
+
+
+
+def word_frequency(query_name):
     data_container = []
+    query_name = query_name
     spans = [
-        {'from_parameter':'2017-11-01', 'to':'2017-11-30'},
-        {'from_parameter':'2017-12-01', 'to':'2017-12-31'},
-        {'from_parameter':'2018-01-01', 'to':'2018-01-31'},
-        {'from_parameter':'2018-02-01', 'to':'2018-02-28'},
-        {'from_parameter':'2018-03-01', 'to':'2018-03-31'}
+        {'from_parameter':'2018-01-01', 'to':'2018-01-15'},
+        {'from_parameter':'2018-01-16', 'to':'2018-01-31'},
+        {'from_parameter':'2018-02-01', 'to':'2018-02-15'},
+        {'from_parameter':'2018-02-15', 'to':'2018-02-28'},
+        {'from_parameter':'2018-03-01', 'to':'2018-03-15'},
+        {'from_parameter':'2018-03-16', 'to':'2018-03-31'}
         ]
     for span in spans:
         news = News()
-        data = news.fetch_news(q='Berkshire Hathaway', language='en', from_parameter=span['from_parameter'], to=span['to'])
+        data = news.fetch_news(q=query_name, language='en', from_parameter=span['from_parameter'], to=span['to'])
         # print(data)
         analysis = news.analyze_count(data)
         data_container.append(analysis) 
@@ -71,10 +110,22 @@ def word_frequency():
             'y': y,
             'name': word 
         }
-        if sum(trace['y']) > 50:
+        if sum(trace['y']) > 100 and trace['name'] != query_name.lower():
             js_data_container.append(trace)
     
-    return render_template("word_frequency.html", data=js_data_container)
+    layout = {
+        'title': 'Other Words Found in Headlines that include "{}" (2018-YTD)'.format(query_name),
+        'xaxis': {
+            'title': 'Week Number'
+        },  
+        'yaxis': {
+            'title': 'Count of Appearances in Headlines'}
+    }
+    
+
+    # save raw js to the database with id=query_name above
+    
+    return [js_data_container, layout]
 
 # run the app.
 if __name__ == "__main__":
@@ -83,3 +134,4 @@ if __name__ == "__main__":
 
     application.debug = True
     application.run()
+

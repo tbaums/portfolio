@@ -7,7 +7,7 @@ class Analyzer:
         clean_data = []
         for article in data:
             if 'published_month' in article:
-                month = article['published_month'].strftime('%Y-%m')
+                month = article['published_month'].strftime('%U')
                 clean_data.append([article['title'], month])
 
         # remove punctuation from titles and split into arrays of words
@@ -61,7 +61,7 @@ class Analyzer:
 
 
     def exclude_word(self, word):
-        exclusion_string = "- & the of and a are  @ – to in is you that it he was for on areas with his they I at be this have from or one had by word but not what all were we when your can said there use an each which she do how their if will up other about out many then them these so some her would make like him into time has look two more write go see number no way could people my than first water been call who oil its now find long down day did get come made may part"
+        exclusion_string = "- & the of and a are  @ – i as says | to in is you that it he was for on areas with his they I at be this have from or one had by word but not what all were we when your can said there use an each which she do how their if will up other about out many then them these so some her would make like him into time has look two more write go see number no way could people my than first water been call who oil its now find long down day did get come made may part"
         exclusion_list = exclusion_string.split(" ")
         return word in exclusion_list
     

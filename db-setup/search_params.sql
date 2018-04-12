@@ -1,7 +1,7 @@
 /* 
 Drop the table if it exists
 */
-drop table if exists "public"."search_params";
+drop table if exists "public"."search_params" cascade;
 
 /* 
 Create table

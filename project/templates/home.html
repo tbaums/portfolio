@@ -9,12 +9,5 @@ Home Page
     <p>This is <b>some</b> text</p>
     <div id="tester" style="width:600px;height:250px;"></div>
     
-    <form method="post" action="{{ url_for('foo')}}" class="inline">
-  <input type="" name="extra_submit_param" value="extra_submit_value">
-  <button type="submit" name="submit_param" value="submit_value" class="link-button">
-    This is a link that sends a POST request
-  </button>
-</form>
-    <a href="{{ url_for('foo')}}" >foo</a>
 </div>
 {% endblock %}

@@ -34,14 +34,16 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Example Apps
+                            Headline Analysis
                         </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ url_for('apps') }}">App Gallery</a>
+                        <a class="dropdown-item" href="{{ url_for('apps') }}">Headline Words</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">App 1</a>
-                        <a class="dropdown-item" href="#">App 2</a>
-                        <a class="dropdown-item" href="#">App 3</a>
+                        <script></script>
+                        {% set links = ['Trump', 'Obama', 'Mueller', 'FBI', 'Syria'] %}
+                        {% for link in links %}
+                        <a class="dropdown-item" href="{{ url_for(link.lower()) }}">{{ link }}</a>
+                        {% endfor %}
                         
                         <!-- <a class="dropdown-item" href="#">Something else here</a> -->
                     </div>

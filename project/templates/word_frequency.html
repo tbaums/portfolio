@@ -1,22 +1,36 @@
 {% extends "base.html" %}
 {% block title %}
-Scratch
+Word Frequency
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>Scratch! What whaaaat!</h1>
-    <p>This is <b>some</b> text</p>
-    <div id="graph" style="width:850px;height:500px;"></div>
+    <div id="graph" ></div>
     <script>
-         Plotly.newPlot('graph', {{ data | safe  }});
+         Plotly.newPlot('graph', {{ data | safe  }}, {{ layout | safe }});
     </script>
-    <ul>
-        {% for item in data: %}
-            <li>{{ item }}, {{ data[item] }}</li>
-        {% endfor %}
-    </ul>
 </div>
+<div class="container">
+    <h1>Headline Word Frequency Analysis</h1>
+    <h2>Why?</h2>
+    <p>I'm interested in the degree of subjectivity required of journalists, even those who genuinely seek to provide objective reporting.</p>
+    <p>My favorite journalism creates a vivid portrait of the tone and tenor of events as they unfolded. Yet, building such a scene requires the writer to express their recollection through the lens of their own life experience.</p>
+    <p>The analysis below is a meager attempt to explore the ebb and flow of words associated with a few choice personalities and institutions over the course of 2018.</p>
+    <p>At present, the graphs merely serve as an interesting representation of the news cycle. I hope to continue the project by looking beyond headline content to uncover broad divergence in sentiment between news sources.</p> 
+    <h2>How it works</h2>
+    <ul>
+        <li>Special thanks to <a href="https://newsapi.org">NewsAPI.org</a> for their free developer API.</li>
+        <li>All graphs plotted using <a href="plot.ly">Plot.ly</a>.</li>    
+    </ul>
+    <h3>Highlights</h3>
+    <p>This is a Flask application running on AWS ElasticBeanstalk backed by a PostgreSQL database running on Amazon RDS. This was my first opportunity to play around with Flask, so there's a huge amount of refactoring that needs to be done, both in the code and in the architecture of the application. I also wrote the entire codebase without the use of Pandas/DataFrames. Suffice it to say, I quickly rediscovered why they came to be. Code is available on <a>GitHub</a>.</p>
+    <p>The application has no asynchronous calls to NewsAPI or any concurrency in analyzing/formatting the data, and as a result I removed the ability for users to submit their own query. The page takes almost a full minute to load, and I felt users would grow frustrated. Instead, I ran a few example query terms which are linked for your curiosity.</p>
+    <p>The page displays queries against the NewsAPI for headlines from all English sources over 2 weeks slices starting Januray 1, 2018. Each slice is then saved to the database for faster retrieval on subsequent loads for that query.</p>
+    <p>Headline text is split by word and then sorted, counted, and cleaned of the top ~100 most common English words (to keep the analysis interesting).</p>
+    <p>Each 2-week time slice retrieves a maximum of 500 headlines. I have no idea how NewsAPI's algorithm for prioritization works, so this analysis shouldn't be used for anything other than interest.</p>
+
+</div>
+
 {% endblock %}
 
 <!-- <script>

@@ -76,7 +76,7 @@ class News:
     def load_from_db(self, params):
         param_id = self.get_param_id(params)
         with CursorFromConnectionFromPool() as cursor:
-            cursor.execute("select *, date_trunc('month', published_at::date) from public.search_content where search_param_id=%s;", (param_id ,)) 
+            cursor.execute("select *, published_at::date from public.search_content where search_param_id=%s;", (param_id ,)) 
             data = cursor.fetchall()
             # create list of dictionaries of articles
             for article in data:
@@ -111,7 +111,10 @@ class News:
             self.total_results = response['totalResults']
             self.pages = min(self.total_results / 100, 5)
 
-            for page in range(1, round(self.pages)):
+            if response['status'] == 'error':
+                return 'Error contacting NewsAPI'
+
+            for page in range(1, 5):
                 if page != 1:
                     response = self.client.get_everything(q=self.get_search_params()['q'],
                                                         language=self.get_search_params()['language'],
