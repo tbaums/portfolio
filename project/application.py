@@ -1,5 +1,6 @@
 from flask import Flask, render_template, session, redirect, request, url_for, g, abort, request
 from news import News
+from employee_analyzer import EmployeeAnalyzer
 import json
 import constants
 
@@ -59,7 +60,11 @@ def syria():
     layout = tmp[1]
     return render_template('syria.html', data=js_data_container, layout=layout)
 
-
+@application.route('/chicago')
+def chicago():
+    ea = EmployeeAnalyzer()
+    js_data_container = ea.get_police_salaries_by_title()
+    return render_template('chicago.html', data=js_data_container)
 
 
 def word_frequency(query_name):
@@ -78,7 +83,7 @@ def word_frequency(query_name):
         data = news.fetch_news(q=query_name, language='en', from_parameter=span['from_parameter'], to=span['to'])
         # print(data)
         analysis = news.analyze_count(data)
-        data_container.append(analysis) 
+        data_container.append(analysis)
 
     wordset = set()
     combined_data_container = {}
@@ -89,7 +94,7 @@ def word_frequency(query_name):
             else:
                 wordset.add(key)
                 combined_data_container[key] = analysis[key]
-                
+
     # var trace1 = {
     #   x: [1, 2, 3, 4],
     #   y: [10, 15, 13, 17],
@@ -107,23 +112,23 @@ def word_frequency(query_name):
         trace = {
             'x': x,
             'y': y,
-            'name': word 
+            'name': word
         }
         if sum(trace['y']) > 100 and trace['name'] != query_name.lower():
             js_data_container.append(trace)
-    
+
     layout = {
         'title': 'Other Words Found in Headlines that include "{}" (2018-YTD)'.format(query_name),
         'xaxis': {
             'title': 'Week Number'
-        },  
+        },
         'yaxis': {
             'title': 'Count of Appearances in Headlines'}
     }
-    
+
 
     # save raw js to the database with id=query_name above
-    
+
     return [js_data_container, layout]
 
 # run the app.
