@@ -22,7 +22,7 @@ def cover_letter():
 
 @application.route('/apps')
 def apps():
-    return render_template('apps.html')
+    return redirect(url_for('trump'))
 
 
 @application.route('/trump')
