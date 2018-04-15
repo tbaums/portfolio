@@ -21,7 +21,7 @@ class EmployeeAnalyzer:
             df = df.drop(columns=['to_delete'])
         return df 
 
-    def get_police_salaries_by_title(self):
+    def get_police_salaries_dist_by_title(self):
         df = self.__load_from_db('POLICE')
         # a = df[df['job_title']=='SERGEANT']
         jobs = list(df['job_title'].drop_duplicates())
@@ -40,6 +40,20 @@ class EmployeeAnalyzer:
         # df = df.groupby(['job_title'])['salary'].mean()
         return js_data_container
 
+    def get_police_salary_mean_by_title(self):
+        df = self.__load_from_db('POLICE')
+        gb = df.groupby(['job_title'])['salary']
+        return gb.mean()
+
+    def get_police_salary_max_by_title(self):
+        df = self.__load_from_db('POLICE')
+        gb = df.groupby(['job_title'])['salary']
+        return gb.max()
+
+    def get_police_salary_min_by_title(self):
+        df = self.__load_from_db('POLICE')
+        gb = df.groupby(['job_title'])['salary']
+        return gb.min()
 
 # ea = EmployeeAnalyzer()
 # ea.get_police_salaries_by_title()
