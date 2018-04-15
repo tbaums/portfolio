@@ -13,6 +13,19 @@
             };
             Plotly.newPlot('graph', {{ data | safe  }}, layout);
         </script>
-    {{layout | safe }}
+        <h1>Chicago Police Dept Employee Salary Distribution</h1>
+        <h2>Why?</h2>
+        <p>I've become increasingly interested in policing over the past year. Beyond the more important questions of the role of policing in society and its legitimacy, I'm interested what appeals about policing to new recruits. I'm also interested learning more about the appeal of policing as a carreer vs. other opportunities.</p>
+        <p>This is (quite clearly) a very preliminary attempt to explore the economic opportunities involved in a career with the police department.</p>
+        <h2>How it works</h2>
+        <ul>
+            <li>Data via Data.gov available here: <a href="https://catalog.data.gov/dataset/current-employee-names-salaries-and-position-titles-840f7">Data.gov</a>.</li>
+            <li>All graphs plotted using <a href="plot.ly">Plot.ly</a>.</li>    
+        </ul>
+        <h3>Highlights</h3>
+        <p>This is a Flask application running on AWS ElasticBeanstalk backed by a PostgreSQL database running on Amazon RDS. This was my first opportunity to play around with Flask, so there's a huge amount of refactoring that needs to be done, both in the code and in the architecture of the application. The "Chicago" analyses use Pandas (specifically DataFrames) for simplicity. Code is available on <a href="https://github.com/tbaums/portfolio">GitHub</a>.</p>
+        <p>The application has no asynchronous calls to the database or any concurrency in analyzing/formatting the data, and as a result load times are poor. Apologies.</p>
+        <p>The page displays queries against the dataset linked above, which I loaded into RDS using a little Python/Psycopg2 script I threw together (available via <a href="http://github.com/tbaums/portfolio">GitHub</a>).</p>
+        </div>
 </div>
 {% endblock %}
