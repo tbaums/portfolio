@@ -63,7 +63,7 @@ def syria():
 @application.route('/chicago')
 def chicago():
     ea = EmployeeAnalyzer()
-    js_data_container = ea.get_police_salaries_by_title()
+    js_data_container = ea.get_police_salaries_dist_by_title()
     return render_template('chicago.html', data=js_data_container)
 
 
